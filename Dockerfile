@@ -10,6 +10,8 @@ ENV M2=$M2_HOME/bin
 ENV PATH $PATH:$M2_HOME:$M2
 RUN npm install -g mimosa
 RUN adduser -D -s bash webelexis
+COPY startup.sh /home/webelexis/startup.sh
+RUN chmod +x /home/webelexis/startup.sh
 USER webelexis
 WORKDIR /home/webelexis
 RUN git clone https://github.com/rgwch/webelexis
@@ -18,7 +20,5 @@ RUN mimosa build
 WORKDIR /home/webelexis/webelexis/webelexis-server
 RUN mvn package
 EXPOSE 2015
-WORKDIR /home/webelexis/webelexis/webelexis-server/target
-RUN java -jar webelexis-server-${VERSION}.jar
-RUN cp cfglocal.json /home/webelexis/cfglocal.json
-CMD ["java","jar","webelexis-server-${VERSION}.jar","/home/webelexis/cfglocal.json"]
+WORKDIR /home/webelexis
+CMD ["./startup.sh"]
